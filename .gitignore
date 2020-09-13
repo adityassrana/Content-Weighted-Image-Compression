@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+#pytorch-lightnig logs
+lightning_logs/
