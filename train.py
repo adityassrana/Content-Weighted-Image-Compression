@@ -39,8 +39,6 @@ class AE(pl.core.LightningModule):
         self.encoder = Encoder()
         self.decoder = Decoder()
         self.loss_func = nn.MSELoss()
-        #self.train_glob = '/home/adityassrana/datatmp/Datasets/CLIC/*png'
-        #self.valid_glob = '/home/adityassrana/datatmp/Datasets/kodak/*.png'
         
     def forward(self,x):
         return self.decoder(self.encoder(x))
