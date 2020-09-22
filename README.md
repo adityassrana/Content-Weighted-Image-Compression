@@ -46,7 +46,7 @@ The importance map that my network learnt to generate on Cityscapes. You can rea
 
 ## Citation
 
-Please cite the original paper if you use their work.
+Please cite the original paper if you use this work.
 
 ````bash
 @InProceedings{Li_2018_CVPR,
