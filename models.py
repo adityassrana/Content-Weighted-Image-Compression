@@ -189,6 +189,7 @@ class Mask(torch.autograd.Function):
         n = 64
         L = 16
         mask = torch.zeros(n, N*H*W).to(device)
+        qimp = i
         qimp_flat = qimp.view(1, N*H*W)
         for indx in range(n):
             mask[indx,:] = torch.where(indx < (n/L)*qimp_flat,torch.Tensor([1]).to(device),torch.Tensor([0]).to(device))
@@ -197,7 +198,7 @@ class Mask(torch.autograd.Function):
 
     @staticmethod
     def backward(ctx, grad_output):
-        N,C,H,W = grad_output.shape
+        N,_,H,W = grad_output.shape
         if grad_output.is_cuda: return torch.ones(N,1,H,W).cuda()
         else: return torch.ones(N,1,H,W)
 
