@@ -35,12 +35,20 @@ To train the model, you need to supply it with a dataset of high quality RGB ima
 The data is read through a glob pattern which must expand to a list of RGB images in PNG format.
 Training can be as simple as the following command:
 
+### Stage 1 : Training the Main Branch
+
 ````bash
 python train.py --verbose train --train_glob="train_images/*.png" --valid_glob="valid_images/*.png"
 ````
 The number of epochs to train the main branch for depends on the size of your dataset. While using Cityscapes, which has a training size of 2,975, the model was trained with a batch size of 64 for 1200 epochs. This will train the model without the importance map after which you must use the importance map branch and train for a few more epochs with a reduced learning rate.
 
-The importance map that my network learnt to generate on Cityscapes. You can read more about my experiments in my bachelor thesis, the link to which is available on my homepage.
+### Stage 2 : Training the Importance Map
+
+To be added soon.
+
+### Results
+
+The importance map that my network learnt to generate on [A2D2](https://www.a2d2.audi/a2d2/en.html) after being trained on Cityscapes. You can read more about my experiments in my bachelor thesis, the link to which is available on my homepage.
 
 ![Importance Map](images/imp_map.png)
 
