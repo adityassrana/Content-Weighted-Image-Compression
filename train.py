@@ -42,7 +42,7 @@ class ImageDataset(Dataset):
 class Config(BaseModel):
     train_files: str
     val_files: str
-    image_size: int
+    patch_size: int
     lr: float
     batch_size: int
     num_epochs: int
@@ -95,11 +95,11 @@ class AE(pl.core.LightningModule):
         self.logger.experiment.add_scalar('psnr/val', avg_psnr, self.current_epoch)
 
     def train_dataloader(self):
-        train_ds = ImageDataset(self.config.train_files, self.config.image_size)
+        train_ds = ImageDataset(self.config.train_files, self.config.patch_size)
         return DataLoader(train_ds, batch_size=self.config.batch_size, shuffle=True, num_workers=4)
 
     def val_dataloader(self):
-        valid_ds = ImageDataset(self.config.val_files, self.config.image_size)
+        valid_ds = ImageDataset(self.config.val_files, self.config.patch_size)
         return DataLoader(valid_ds, batch_size=self.config.batch_size, shuffle=False, num_workers=4)
 
     def configure_optimizers(self):
