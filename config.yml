@@ -1,0 +1,6 @@
+train_files: "/home/adityassrana/datatmp/Datasets/CLIC/*png"
+val_files: "/home/adityassrana/datatmp/Datasets/kodak/*.png"
+image_size: 128
+lr: 3e-4
+batch_size: 16
+num_epochs: 5
