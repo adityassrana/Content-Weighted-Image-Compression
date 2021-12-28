@@ -28,7 +28,7 @@ i.e. convolutional encoder, binarizer, importance map network, and convolutional
 
 The model is trained in 2 steps
 
-1. Train the model without using the importance map branch. 
+1. Train the model without using the importance map branch.
 2. Introduce the importance map branch in the pre-trained model and fine-tune.
 
 To train the model, you need to supply it with a dataset of high quality RGB images and a set of validation images to track the reconstruction.
@@ -37,14 +37,16 @@ Training can be as simple as the following command:
 
 ### Stage 1 : Training the Main Branch
 
+The training script can be configured from the yaml file and can be easily adapted for your own usage.
+
 ````bash
-python train.py --verbose train --train_glob="train_images/*.png" --valid_glob="valid_images/*.png"
+python train.py
 ````
 The number of epochs to train the main branch for depends on the size of your dataset. While using Cityscapes, which has a training size of 2,975, the model was trained with a batch size of 64 for 1200 epochs. This will train the model without the importance map after which you must use the importance map branch and train for a few more epochs with a reduced learning rate.
 
 ### Stage 2 : Training the Importance Map
 
-To be added soon.
+Check issues section
 
 ### Results
 
