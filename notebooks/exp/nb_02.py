@@ -21,14 +21,14 @@ class DepthToSpace(torch.nn.Module):
 class Decoder(nn.Module):
     def __init__(self):
         super(Decoder, self).__init__()
-        self.decoder = nn.Sequential(conv(64,512,1,1,0), relu,
-                                    ResBlock(512), relu,
-                                    ResBlock(512), relu,
+        self.decoder = nn.Sequential(conv(64,512,1,1,0), nn.ReLU(),
+                                    ResBlock(512), nn.ReLU(),
+                                    ResBlock(512), nn.ReLU(),
                                     DepthToSpace(2),
-                                    conv(128,256), relu,
-                                    ResBlock(256), relu,
+                                    conv(128,256), nn.ReLU(),
+                                    ResBlock(256), nn.ReLU(),
                                     DepthToSpace(4),
-                                    conv(16,32), relu,
+                                    conv(16,32), nn.ReLU(),
                                     conv(32,3))
 
     def extra_repr(self):
@@ -56,18 +56,12 @@ def quantize_values(x):
 class Mask(torch.autograd.Function):
     @staticmethod
     def forward(ctx,i):
-        # checking for is_cuda() is
-        # a hack to work around torch.where
-        # not knowing which device to put
-        # the tensors on
-        if i.is_cuda:
-            device = torch.device("cuda")
-        else:
-            device = torch.device("cpu")
+        device = i.device
         N,_,H,W = i.shape
         n = 64
         L = 16
         mask = torch.zeros(n, N*H*W).to(device)
+        qimp = i
         qimp_flat = qimp.view(1, N*H*W)
         for indx in range(n):
             mask[indx,:] = torch.where(indx < (n/L)*qimp_flat,torch.Tensor([1]).to(device),torch.Tensor([0]).to(device))
@@ -77,8 +71,7 @@ class Mask(torch.autograd.Function):
     @staticmethod
     def backward(ctx, grad_output):
         N,C,H,W = grad_output.shape
-        if grad_output.is_cuda: return torch.ones(N,1,H,W).cuda()
-        else: return torch.ones(N,1,H,W)
+        return torch.ones(N,1,H,W).to(grad_output.device)
 
 def generate_mask(x):
     return Mask.apply(x)

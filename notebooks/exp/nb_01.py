@@ -13,10 +13,6 @@ def init_cnn(m):
     if isinstance(m, (nn.Conv2d,nn.Linear)): nn.init.kaiming_normal_(m.weight)
     for l in m.children(): init_cnn(l)
 
-def noop(x): return x
-
-relu = nn.ReLU()
-
 def conv(ni, nf, ks=3, stride=1, padding=1, **kwargs):
     _conv = nn.Conv2d(ni, nf, kernel_size=ks,stride=stride,padding=padding, **kwargs)
     nn.init.kaiming_normal_(_conv.weight)
@@ -38,13 +34,6 @@ class ResBlock(nn.Module):
 
     def forward(self, x):
         return x  + self.conv2(F.relu(self.conv1(x)))
-
-def children(m): return list(m.children())
-
-class Hook():
-    def __init__(self, m, f): self.hook = m.register_forward_hook(partial(f, self))
-    def remove(self): self.hook.remove()
-    def __del__(self): self.remove()
 
 class Binarizer(torch.autograd.Function):
     @staticmethod
@@ -86,22 +75,22 @@ class Lambda(nn.Module):
     def forward(self, x): return self.func(x)
 
 class Encoder(nn.Module):
-    def __init__(self,return_imp_map=False):
+    def __init__(self, return_imp_map=False):
         super(Encoder, self).__init__()
         self.return_imp_map = return_imp_map
-        self.stem = nn.Sequential(conv(3, 128, 8, 4, 2), relu,
-                                   ResBlock(128), relu,
-                                   conv(128, 256, 4, 2, 1), relu,
-                                   ResBlock(256), relu,
-                                   ResBlock(256), relu)
+        self.stem = nn.Sequential(conv(3, 128, 8, 4, 2), nn.ReLU(),
+                                 ResBlock(128), nn.ReLU(),
+                                 conv(128, 256, 4, 2, 1), nn.ReLU(),
+                                 ResBlock(256), nn.ReLU(),
+                                 ResBlock(256), nn.ReLU())
 
         self.head = nn.Sequential(conv(256, 64, 3, 1, 1),
                                    nn.Sigmoid(),
                                    Lambda(bin_values))
 
 
-        self.imp_map_extractor = nn.Sequential(conv(256,128), relu,
-                                                conv(128,128), relu,
+        self.imp_map_extractor = nn.Sequential(conv(256,128), nn.ReLU(),
+                                                conv(128,128),nn.ReLU(),
                                                 conv(128,1), nn.Sigmoid())
 
         #initiating layers before Sigmoid with Xavier
@@ -112,7 +101,9 @@ class Encoder(nn.Module):
         params = sum(p.numel() for p in self.parameters())
         return f'Total Params: {params}'
 
-    def forward(self,x):
+    def forward(self, x):
         stem = self.stem(x)
-        if self.return_imp_map:return self.head(stem), self.imp_map_extractor(stem)
-        else: return self.head(stem)
+        if self.return_imp_map:
+            return self.head(stem), self.imp_map_extractor(stem)
+        else:
+            return self.head(stem)

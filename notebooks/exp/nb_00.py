@@ -4,29 +4,13 @@
 #################################################
 # file to edit: dev_nb/00_imports_and_data.ipynb
 
-import operator
-
-def test(a,b,cmp,cname=None):
-    if cname is None: cname=cmp.__name__
-    assert cmp(a,b),f"{cname}:\n{a}\n{b}"
-
-def test_eq(a,b): test(a,b,operator.eq,'==')
-
 from pathlib import Path
 import glob
-from IPython.core.debugger import set_trace
-import pickle, gzip, math, torch, matplotlib as mpl
+import torch, matplotlib as mpl
 import matplotlib.pyplot as plt
-from torch import tensor
+from torch import tensor, nn
 from torchvision import transforms
 from PIL import Image
-
-def near(a,b): return torch.allclose(a, b, rtol=1e-3, atol=1e-5)
-def test_near(a,b): test(a,b,near)
-
-from torch.nn import init
-def mse(output, targ): return (output.squeeze(-1) - targ).pow(2).mean()
-from torch import nn
 
 class ImageDataset(torch.utils.data.Dataset):
     """Dataset class for creating data pipeline"""
