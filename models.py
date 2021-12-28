@@ -186,10 +186,7 @@ class Mask(torch.autograd.Function):
     """
     @staticmethod
     def forward(ctx, i):
-        if i.is_cuda:
-            device = torch.device("cuda")
-        else:
-            device = torch.device("cpu")
+        device = i.device
         N, _, H, W = i.shape
         n = 64
         L = 16
