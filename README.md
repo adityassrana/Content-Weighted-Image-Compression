@@ -18,12 +18,6 @@ i.e. convolutional encoder, binarizer, importance map network, and convolutional
 5. The binary code B(E(x)) is then element-wise mutiplied with M(P(x)) to get the trimmed binary codes
 6. Finally, the decoder defines a nonlinear synthesis transformation to produce the reconstructed image $\hat{x}$
 
-## Dependencies
-
-- PyTorch
-- PyTorch Lightning
-- PIL
-
 ## Training your own model
 
 The model is trained in 2 steps
