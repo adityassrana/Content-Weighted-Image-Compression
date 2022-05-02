@@ -202,10 +202,7 @@ class Mask(torch.autograd.Function):
     @staticmethod
     def backward(ctx, grad_output):
         N, _, H, W = grad_output.shape
-        if grad_output.is_cuda:
-            return torch.ones(N, 1, H, W).cuda()
-        else:
-            return torch.ones(N, 1, H, W)
+        return torch.ones(N, 1, H, W).to(grad_output.device)
 
 
 def generate_mask(x):
